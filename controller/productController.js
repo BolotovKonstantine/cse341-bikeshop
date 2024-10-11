@@ -20,6 +20,20 @@ const addNewProduct = async (req, res, next) => {
   }
 };
 
+const getProducts = async (req, res, next) => {
+  try {
+    const products = await Product.find();
+
+    if (!products) {
+      return res.send('No products found');
+    }
+    res.status(200).json(products);
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   addNewProduct,
+  getProducts,
 };
