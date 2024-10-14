@@ -93,7 +93,7 @@ const deleteProductById = async (req, res, next) => {
         .status(404)
         .json({ message: `Product with _id: ${productId} not found` });
     }
-    const deleteProduct = await Product.findByIdAndDelete(productId);
+    await Product.findByIdAndDelete(productId);
     res.status(200).json({
       message: `Product with _id: ${productId} has been successfully deleted.`,
     });
