@@ -2,14 +2,34 @@ const express = require('express');
 const router = express.Router();
 const productControl = require('../controller/productController');
 
-router.get('/', productControl.getProducts);
+router.get(
+  // #swagger.tag = ['Products']
+  '/',
+  productControl.getProducts
+);
 
-router.post('/', productControl.addNewProduct);
+router.post(
+  // #swagger.tag = ['Products']
+  '/',
+  productControl.addNewProduct
+);
 
-router.get('/:prodId', productControl.getProductById);
+router.get(
+  // #swagger.tag = ['Products']
+  '/:prodId',
+  productControl.getProductById
+);
 
-router.put('/:prodId', productControl.updateProduct);
+router.put(
+  // #swagger.tag = ['Products']
+  '/:prodId',
+  productControl.updateProduct
+);
 
-router.delete('/:prodId', productControl.deleteProductById);
+router.delete(
+  // #swagger.tag = ['Products']
+  '/:prodId',
+  productControl.deleteProductById
+);
 
 module.exports = router;
