@@ -1,34 +1,38 @@
 const express = require('express');
 const router = express.Router();
 const productControl = require('../controller/productController');
+const { isAuthenticated } = require('../utilities/authenticate');
 
 router.get(
-  // #swagger.tag = ['Products']
+  // #swagger.tags = ['Products']
   '/',
   productControl.getProducts
 );
 
 router.post(
-  // #swagger.tag = ['Products']
+  // #swagger.tags = ['Products']
   '/',
+  isAuthenticated,
   productControl.addNewProduct
 );
 
 router.get(
-  // #swagger.tag = ['Products']
+  // #swagger.tags = ['Products']
   '/:prodId',
   productControl.getProductById
 );
 
 router.put(
-  // #swagger.tag = ['Products']
+  // #swagger.tags = ['Products']
   '/:prodId',
+  isAuthenticated,
   productControl.updateProduct
 );
 
 router.delete(
-  // #swagger.tag = ['Products']
+  // #swagger.tags = ['Products']
   '/:prodId',
+  isAuthenticated,
   productControl.deleteProductById
 );
 

@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon server.js"
+    "start": "nodemon server.js",
+    "swagger": "node ./swagger.js"
   },
   "keywords": [],
   "author": "",
@@ -11,12 +12,19 @@
   "description": "",
   "dependencies": {
     "body-parser": "^1.20.3",
+    "connect-mongo": "^5.1.0",
     "dotenv": "^16.4.5",
     "express": "^4.21.1",
+    "express-session": "^1.18.1",
     "joi": "^17.13.3",
-    "mongoose": "^8.7.1"
+    "mongoose": "^8.7.1",
+    "passport": "^0.7.0",
+    "passport-github2": "^0.1.12",
+    "swagger-ui-express": "^5.0.1"
   },
   "devDependencies": {
-    "nodemon": "^3.1.7"
+    "joi-to-swagger": "^6.2.0",
+    "nodemon": "^3.1.7",
+    "swagger-autogen": "^2.23.7"
   }
 }
