@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const dotenv = require('dotenv').config();
 const Product = require('../model/Product');
+const Order = require('../model/Order')
 
 
 const validateOrder = async (req, res, next) => {
@@ -54,6 +55,15 @@ async function checkProducts(id){
     }
 }
 
+async function checkOrder(req, res, next) {
+    const orderExists = await Order.exists({_id : req.params.id})
+    if (!orderExists) {
+        res.status(400).json({message: "Error. Order doesn't exist."})
+    } else {
+        next()
+    }
+}
+
 async function checkUser(id) {
     try {
         await mongoose.connect(process.env.MONGODB_URI); // Ensure connection is established
@@ -81,4 +91,5 @@ async function checkUser(id) {
 
 // }
 
-module.exports = { validateOrder }
+
+module.exports = { validateOrder, checkOrder }
