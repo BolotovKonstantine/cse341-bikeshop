@@ -18,7 +18,18 @@ const productSchema = Joi.object({
   reviews: Joi.string().min(10).optional(),
 });
 
+const userSchema = Joi.object({
+  firstName: Joi.string().min(2).required(),
+  lastName: Joi.string().min(2).required(),
+  address: Joi.string().required(),
+  email: Joi.string().email().required(),
+  phone: Joi.string()
+    .pattern(/^\d{3}-?\d{3}-?\d{4}$/)
+    .required(),
+});
+
 const productSchemaSwagger = joiToSwagger(productSchema).swagger;
+const userSchemaSwagger = joiToSwagger(userSchema).swagger;
 
 const doc = {
   info: {
@@ -30,6 +41,7 @@ const doc = {
   components: {
     schemas: {
       Product: productSchemaSwagger,
+      User: userSchemaSwagger,
     },
   },
 };
