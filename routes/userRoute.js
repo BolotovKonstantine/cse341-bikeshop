@@ -10,13 +10,20 @@ router.get(
 );
 
 router.get(
-    // #swagger.tags = ['Users']
-    '/:userId',
-    user.getUser
-  );
+  // #swagger.tags = ['Users']
+  '/:userId',
+  user.getUser
+);
 
 router.post(
   // #swagger.tags = ['Users']
+  /* #swagger.parameters['body'] = {
+      in: 'body',
+      description: 'User object',
+      required: true,
+      schema: { $ref: '#/components/schemas/User' }
+    }
+      */
   '/',
   isAuthenticated,
   user.newUser
@@ -24,6 +31,13 @@ router.post(
 
 router.put(
   // #swagger.tags = ['Users']
+  /* #swagger.parameters['body'] = {
+      in: 'body',
+      description: 'User object',
+      required: true,
+      schema: { $ref: '#/components/schemas/User' }
+    }
+      */
   '/:userId',
   isAuthenticated,
   user.updateUser
