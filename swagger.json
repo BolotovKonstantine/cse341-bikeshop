@@ -5,7 +5,7 @@
     "description": "Description",
     "version": "1.0.0"
   },
-  "host": "localhost:5000",
+  "host": "cse341-bikeshop-5jff.onrender.com",
   "basePath": "/",
   "schemes": [
     "http",

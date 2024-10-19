@@ -36,7 +36,7 @@ const doc = {
     title: 'My API',
     description: 'Description',
   },
-  host: 'localhost:5000',
+  host: 'cse341-bikeshop-5jff.onrender.com',
   schemes: ['http', 'https'],
   components: {
     schemas: {
