@@ -1,8 +1,70 @@
 const mongoose = require('mongoose');
 const orderSchema = require('../model/Order');
+const userSchema = require('../model/User');
+const productSchema = require('../model/Product')
 const { error } = require('../utilities/productvalidator');
+const { newUser } = require('./user');
 const Order = mongoose.model('Order')
+const Product = mongoose.model('Product');
+const User = mongoose.model('User');
 // productId, quantity, userId
+
+
+/* --------------------
+     POST/DELETE 
+   -------------------- */ 
+
+// Create Order
+const createOrder = async (req, res, next) => { // TODO: Add functionality to check and update stock quantity
+    // const products = req.body.products;
+    // const userId = req.body.userId;
+    const order = new Order({
+        products: req.body.products,
+        userId: req.body.userId
+    })
+    try {
+        await order.save();  // save the order to the orders collection
+        const user = await User.findById(req.body.userId);
+
+        // if user doesn't already have an orders array, make one
+        if (!user.orders) {
+            user.orders = [];
+        }
+        user.orders.push(order._id);
+        await user.save({ validateBeforeSave: false }); 
+        res.status(200).json({message: 'Order succesfully created!'})
+
+    } catch (error) {
+        res.status(500).json({message: `Unknown error occurred while saving order: ${error}` });
+    }    
+}
+
+//Delete Order
+const deleteOrder = async (req, res, next) => {
+
+    const orderNumber = req.params.order;
+    if (!isValid(orderNumber)) {error};
+    try {
+
+        //Step 1: Delete the order from the orders database
+        const orderDelete = await Order.findByIdAndDelete(orderNumber);
+        if (!orderDelete) {
+        res.status(500).json({ message: `Unknown error occurred while deleting order: ${error}`})
+        } 
+
+
+        //Step 2: Delete the order from the user's order history
+        await User.findByIdAndUpdate(orderDelete.userId, {$pull: { orders: new mongoose.Types.ObjectId(orderDelete._id) }}, {new : true});
+        res.status(200).json({ message: "Order deleted and user's order history updated"});   
+    }
+     catch (error){
+        res.status(200).json({ message: 'Error deleting order: ' + error});
+    }    
+}
+
+/* --------------------
+           GET 
+   -------------------- */ 
 
 // Get all Orders
 const getAllOrders = async (req, res) => {
@@ -17,8 +79,8 @@ const getAllOrders = async (req, res) => {
 // Get Order by orderId
 const findOrderById = async (req, res) => {
     try {
-        const orderId = req.params.id;
-        const order = await Order.findById(orderId);
+        if (!isValid(req.params.id)) {error};
+        const order = await Order.findById(req.params.id);
 
         if(!order){
             res.status(400).json({message: 'Order does not exist!'});
@@ -31,50 +93,106 @@ const findOrderById = async (req, res) => {
     }
 }
 
+/* --------------------
+          PUT 
+   -------------------- */ 
 
-// Create Order
-const createOrder = async (req, res, next) => {
-    const products = req.body.products;
-    const userId = req.body.userId;
-    const order = new Order({
-        products: products,
-        userId: userId
-    })
+// Add a Product
+const addProduct = async (req, res) => {
+    if (!isValid(req.body.productId)) {error};
+    if(!Product.exists({_id: req.body.productId})){
+        res.status(400).json({message: "Invalid Request: Product does not exist"})
+    }
     try {
-        await order.save();  // save the order to the orders collection
-        // await User.findByIdAndUpdate(userId, {$push : {orders : Order}}) // save the order to the user's order history
-        res.status(201).json(order);
+        const order = await Order.findById(req.params.orderId)
+        const productToAdd = req.body.productId;
+        const quantityToAdd = req.body.quantity;
+        const orderProducts = order.products;
+
+        // Check to see if order already has that product listed
+        const existingProduct = orderProducts.find(product => product.productId.toString() === productToAdd.toString());
+        if (!existingProduct) { // if it doesn't, add it
+            order.products.push({productId: req.body.productId, quantity: req.body.quantity});
+        } else { // if it does, update the quantity
+            existingProduct.quantity += quantityToAdd;
+        }
+        await order.save();
+        return res.status(200).json({message: 'Product added/updated successfully'})
     } catch (error) {
-        res.status(500).json({message: `Unknown error occurred while saving order: ${error}` });
-    }    
+        res.status(500).json({message : `Unable to add/update product.  Error: ${error}`}) 
+    };
+
+}
+// Remove a product
+const deleteProduct = async (req, res) => {
+    if (!isValid(req.params.orderId)) {error};
+    try{
+        const order = await Order.findById(req.params.orderId);
+        const productToDelete = req.body.productId;
+        const quantityToDelete = req.body.quantity;
+        const orderProducts = order.products;
+
+        const productExists =  orderProducts.find(product => product.productId.toString() === productToDelete.toString());
+        if (!productExists) {
+            res.status(400).json({message: "Product doesn't exist in order"});
+        } else {
+
+            if (productExists.quantity > quantityToDelete) {
+                productExists.quanty -= quantityToDelete
+            } else {
+                order.products = order.products.filter(product => 
+                    !(product.productId.toString() === productToDelete.toString() && product.quantity <= quantityToDelete)
+                );
+                if (order.products.length == 0) {
+                    await Order.deleteOne({_id: order._id})
+                } else {
+                    await order.save()
+                }
+            }
+            // If order.products that matches the product ID has a quantity less than the quantityToDelete amount, remove that product from the list.  
+            
+            res.status(200).json({message: `Succesfully removed/updated product`})
+        }
+    } catch (error) {
+        res.status(500).json({message: `Unable to remove/update product. Error: ${error}`})
+    }
 }
 
-//Change Order
-
-
-//Delete Order
-const deleteOrder = async (req, res, next) => {
-    const orderNumber = req.params.order;
-    try {
-
-        //Step 1: Delete the order from the orders database
-        const orderDelete = await Order.findByIdAndDelete(orderNumber);
-        if (!orderDelete) {
-        res.status(500).json({ message: `Unknown error occurred while deleting order: ${error}`})
-        } 
-    } catch {
-        res.status(200).json({ message: 'Error deleting order: ' + error}) // catch moves after step 2 is added
-    }
-        //Step 2: Delete the order from the user's order history
-        /* const userId = Order.userId 
-        await User.updateOne( {orders: Orders._id}, {$pull: {orders : Order._id}});
-        
-        res.status(200).json({ message: "Order deleted and user's order history updated"});
-        
-        
-    } catch (error){
-        res.status(200).json({ message: 'Error deleting order: ' + error}); */
-    }
+//Change User on an Order 
+const changeUser = async (req, res) => {
     
+    try {
+        const { orderId } = req.params;
+        const { userId } = req.body
+        
+        if (!isValid(orderId)) { return res.status(400).json({message: 'Invalid Order ID'})};
+    
+        if (!await Order.exists({_id: orderId}) || !await User.exists({_id: userId})) { res.status(400).json({message: `Order or User does not exist`})};
+    
+        const order = await Order.findById(orderId);
+        const oldUserId = order.userId;
 
-module.exports = { createOrder, deleteOrder, getAllOrders, findOrderById }
+        //remove order from old user's history
+        await User.findByIdAndUpdate(oldUserId, { $pull: {orders: order._id}});
+
+        //add the new user to the order
+        await Order.findByIdAndUpdate(orderId, { userId }, {new : true});
+
+        //add the order to the updated User's order history
+        await User.findByIdAndUpdate(userId, {$push : {orders: order._id}}, {validateBeforeSave: false});
+
+        return res.status(200).json({message: 'User has been sucessfully changed!'})
+    }
+    catch (error){
+        res.status(400).json({message: error});
+    }
+}
+
+// ObjectID Validity Checker
+const isValid = (id) => {
+    if (!mongoose.Types.ObjectId.isValid(id)){
+        return error;
+    } return true
+}
+
+module.exports = { createOrder, deleteOrder, getAllOrders, findOrderById, addProduct, deleteProduct, changeUser}

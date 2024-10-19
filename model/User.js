@@ -26,6 +26,10 @@ const userSchema = new mongoose.Schema({
     enum: ['customer', 'employee', 'manager'],
     default: 'customer',
   },
+  orders: { // added by Kjirsten
+    type: Array,
+    default: []
+  }
 });
 
 module.exports = mongoose.model('User', userSchema);

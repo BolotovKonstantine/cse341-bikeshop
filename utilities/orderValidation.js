@@ -1,95 +1,43 @@
-const mongoose = require('mongoose');
-const dotenv = require('dotenv').config();
-const Product = require('../model/Product');
-const Order = require('../model/Order')
+require('../model/User');
+require('../model/Product');
 
+const Joi = require('joi');
+const mongoose = require('mongoose');
+const Product = mongoose.model('Product');
+const User = mongoose.model('User');
+
+const productsSchema = Joi.object({
+    productId: Joi.string().hex().length(24).required()
+        .custom(async (product, helpers) => {
+        const productExists = await Product.exists({_id: product.productId});
+        if (!productExists) {
+            return helpers.message(`Product with ID ${product.productId} does not exist`)
+        }
+        return product;
+    }),
+    quantity: Joi.number().integer().min(1).required()
+})
+
+const orderSchema = Joi.object({
+    products: Joi.array().items(productsSchema),
+    userId: Joi.string().custom(async (userId, helpers) => {
+        const userExists = await User.exists({_id: userId});
+        if (!userExists) {
+            return helpers.message("User doesn't exist")
+        }
+        return userId;
+    })
+});
 
 const validateOrder = async (req, res, next) => {
-    const errors = [];
-    // Check that products listed are valid products
-    const products = req.body.products;
-    products.forEach(item => {
-        
-        if (!mongoose.Types.ObjectId.isValid(item.productId)){
-            errors.push({ message: `Invalid Product Number: ${item}`})
-        }
-        else if (checkProducts(item.productId) == false){
-            errors.push( {message: `Product does not exist: ${item}`})
-        }
-         });
-        // and that quantity is >= 1
-        if (products.quantity < 1) {
-            errors.push( { message: 'Quantity cannot be less than 1.'})
-        }
-
-    // Check that the user listed is valid
-    if (!mongoose.Types.ObjectId.isValid(req.body.userId)){
-        errors.push({ message: `Invalid User ID`})
-    }
-
-    // and that the user exists in the database
-    if (checkUser(req.body.userId) == false) {
-        console.log('oh well')
-    }
-    
-    // if (checkUser(req.body.userId) == false){
-    //     errors.push( {message: `User doesn't exist`})
-    // }
-
-
-    // Return error messages if any, or pass to next
-    if (errors.length > 0){
-        return res.status(400).json({ errors: errors })
-    }
-    else {
-        next();
-    }
-}
-
-async function checkProducts(id){
-    const productExists = await Product.exists({_id: id});
-    if (!productExists) {
-        return false;
-    } else {
-        return true;
-    }
-}
-
-async function checkOrder(req, res, next) {
-    const orderExists = await Order.exists({_id : req.params.id})
-    if (!orderExists) {
-        res.status(400).json({message: "Error. Order doesn't exist."})
-    } else {
-        next()
-    }
-}
-
-async function checkUser(id) {
+    console.log(req.body);
     try {
-        await mongoose.connect(process.env.MONGODB_URI); // Ensure connection is established
-        const collection = mongoose.connection.db.collection('users');
+        await orderSchema.validateAsync(req.body);
 
-        // Use `new` when creating an ObjectId
-        const userId = new mongoose.Types.ObjectId(id); 
-
-        const userExists = await collection.findOne({ _id: userId });
-
-        // If no user is found, return false
-        return !!userExists;
-
+        next()
     } catch (error) {
-        console.error('Error connecting to the database', error);
-        return false;
+        res.status(400).json({message :`Validation error: ${error.message}`})
     }
 }
-    //Once the User Model is updated               
-    // const userExists = await User.exists({_id: id});
-    //if (!userExists) {
-    // return false }
-    //else {
-    // return true}
 
-// }
-
-
-module.exports = { validateOrder, checkOrder }
+module.exports = validateOrder;
