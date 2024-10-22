@@ -8,8 +8,8 @@
   "host": "cse341-bikeshop-5jff.onrender.com",
   "basePath": "/",
   "schemes": [
-    "http",
-    "https"
+    "https",
+    "http"
   ],
   "paths": {
     "/api-docs": {
