@@ -6,6 +6,13 @@ const mongoose = require('mongoose');
 const Product = mongoose.model('Product');
 const User = mongoose.model('User');
 
+const objectIdValidator = (value) => {
+    if (!mongoose.Types.ObjectId.isValid(value)) {
+      throw new Error(`${value} is not a valid ID type`);
+    }
+    return value;
+  };
+
 const productsSchema = Joi.object({
     productId: Joi.string()
       .required()
@@ -50,11 +57,6 @@ const orderSchema = Joi.object({
 //     }
 // }
 
-const objectIdValidator = (value) => {
-    if (!mongoose.Types.ObjectId.isValid(value)) {
-      throw new Error(`${value} is not a valid ID type`);
-    }
-    return value;
-  };
 
-module.exports = orderSchema;
+
+module.exports = objectIdValidator;
