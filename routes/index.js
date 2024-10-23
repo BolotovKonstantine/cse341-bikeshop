@@ -21,5 +21,6 @@ router.get('/logout', (req, res, next) => {
 router.use('/products', require('./productRoute'));
 router.use('/orders', require('./ordersRoute'));
 router.use('/users', require('./userRoute'));
+router.use('/stock', require('./stockRoute'));
 
 module.exports = router;
