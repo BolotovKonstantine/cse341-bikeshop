@@ -37,7 +37,7 @@ const doc = {
     description: 'Description',
   },
   host: 'cse341-bikeshop-5jff.onrender.com',
-  schemes: ['https', 'http'],
+  schemes: ['http', 'https'],
   components: {
     schemas: {
       Product: productSchemaSwagger,
