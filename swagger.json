@@ -544,6 +544,9 @@
     },
     "/stock/": {
       "post": {
+        "tags": [
+          "Stock"
+        ],
         "description": "",
         "parameters": [
           {
@@ -553,6 +556,12 @@
               "type": "object",
               "properties": {
                 "productId": {
+                  "example": "any"
+                },
+                "numItems": {
+                  "example": "any positive number"
+                },
+                "location":{
                   "example": "any"
                 }
               }
@@ -574,6 +583,9 @@
     },
     "/stock/all-products": {
       "get": {
+        "tags": [
+          "Stock"
+        ],
         "description": "",
         "responses": {
           "200": {
@@ -587,6 +599,9 @@
     },
     "/stock/{product}": {
       "get": {
+        "tags": [
+          "Stock"
+        ],
         "description": "",
         "parameters": [
           {
@@ -608,6 +623,9 @@
     },
     "/stock/{stock}": {
       "put": {
+        "tags": [
+          "Stock"
+        ],
         "description": "",
         "parameters": [
           {
@@ -623,6 +641,12 @@
               "type": "object",
               "properties": {
                 "productId": {
+                  "example": "any"
+                },
+                "numItems": {
+                  "example": "any positive number"
+                },
+                "location":{
                   "example": "any"
                 }
               }
@@ -645,6 +669,9 @@
         }
       },
       "delete": {
+        "tags": [
+          "Stock"
+        ],
         "description": "",
         "parameters": [
           {

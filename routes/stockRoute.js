@@ -1,17 +1,11 @@
-const router = require('express').Router();
-const { validateStock } = require('../utilities/stockValidator')
+const express = require('express');
+const router = express.Router();
 const stockController = require('../controller/stockController');
-const { isAuthenticated } = require('../utilities/authenticate');
 
-
-router.post('/', validateStock, stockController.createStock);
-
-router.get('/all-products', stockController.getAllProducts);
-
-router.get('/:product', stockController.getStockByProduct);
-
-router.put('/:stock', validateStock, stockController.updateStock);
-
-router.delete('/:stock', stockController.deleteStock);
+router.post('/', stockController.addNewStock);
+router.get('/all-products', stockController.getAllStocks);
+router.get('/:product',  stockController.getStocksByProduct);
+// router.put('/:stock', stockController.updateStock);
+router.delete('/:stock', stockController.deleteStockById);
 
 module.exports = router;
