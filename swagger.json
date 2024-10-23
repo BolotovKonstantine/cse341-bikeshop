@@ -8,8 +8,8 @@
   "host": "cse341-bikeshop-5jff.onrender.com",
   "basePath": "/",
   "schemes": [
-    "http",
-    "https"
+    "https",
+    "http"
   ],
   "paths": {
     "/api-docs": {
@@ -181,7 +181,7 @@
         "tags": [
           "Orders"
         ],
-        "description": "",
+        "description": "Create a new order",
         "parameters": [
           {
             "name": "body",
@@ -203,9 +203,6 @@
           "200": {
             "description": "OK"
           },
-          "400": {
-            "description": "Bad Request"
-          },
           "401": {
             "description": "Unauthorized"
           },
@@ -218,7 +215,7 @@
         "tags": [
           "Orders"
         ],
-        "description": "",
+        "description": "Display all orders",
         "responses": {
           "200": {
             "description": "OK"
@@ -234,7 +231,7 @@
         "tags": [
           "Orders"
         ],
-        "description": "",
+        "description": "Delete an order",
         "parameters": [
           {
             "name": "order",
@@ -261,7 +258,7 @@
         "tags": [
           "Orders"
         ],
-        "description": "",
+        "description": "Display a specific order",
         "parameters": [
           {
             "name": "id",
@@ -288,7 +285,7 @@
         "tags": [
           "Orders"
         ],
-        "description": "",
+        "description": "Add product/quantity to an existing order",
         "parameters": [
           {
             "name": "orderId",
@@ -333,7 +330,7 @@
         "tags": [
           "Orders"
         ],
-        "description": "",
+        "description": "Remove product/quantity from an existing order",
         "parameters": [
           {
             "name": "orderId",
@@ -378,7 +375,7 @@
         "tags": [
           "Orders"
         ],
-        "description": "",
+        "description": "change a user on an existing order",
         "parameters": [
           {
             "name": "orderId",
