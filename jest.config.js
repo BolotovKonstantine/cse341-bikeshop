@@ -2,5 +2,5 @@ module.exports = {
   testEnvironment: 'node',
   verbose: true,
   testMatch: ['**/?(*.)+(test).js'],
-  collectCoverage: true,
+  collectCoverage: false,
 };
