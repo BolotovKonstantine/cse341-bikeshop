@@ -11,7 +11,7 @@
             "skipFiles": [
                 "<node_internals>/**"
             ],
-            "program": "${workspaceFolder}/model/Order.js"
+            "program": "${workspaceFolder}/server.js"
         }
     ]
 }

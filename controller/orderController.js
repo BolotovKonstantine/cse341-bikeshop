@@ -99,6 +99,7 @@ const findOrderById = async (req, res) => {
 
 // Add a Product
 const addProduct = async (req, res) => {
+    console.log(req.body.productId);
     if (!isValid(req.body.productId)) {error};
     if(!Product.exists({_id: req.body.productId})){
         res.status(400).json({message: "Invalid Request: Product does not exist"})
