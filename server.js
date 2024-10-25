@@ -108,7 +108,7 @@ app.use((error, req, res, next) => {
   res.json({ error: error.message });
   next();
 });
-
+module.exports = app;
 mongoose.connection.once('open', () => {
   console.log('The database is now connected');
   app.listen(PORT, () => {
