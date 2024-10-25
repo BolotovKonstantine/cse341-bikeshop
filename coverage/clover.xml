@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1729855852070" clover="3.2.0">
-  <project timestamp="1729855852070" name="All files">
+<coverage generated="1729856743905" clover="3.2.0">
+  <project timestamp="1729856743906" name="All files">
     <metrics statements="442" coveredstatements="186" conditionals="110" coveredconditionals="4" methods="51" coveredmethods="10" elements="603" coveredelements="200" complexity="0" loc="442" ncloc="442" packages="6" files="20" classes="20"/>
     <package name="cse341-bikeshop">
       <metrics statements="49" coveredstatements="47" conditionals="6" coveredconditionals="4" methods="11" coveredmethods="9"/>
@@ -51,10 +51,10 @@
         <line num="108" count="1" type="stmt"/>
         <line num="109" count="1" type="stmt"/>
         <line num="111" count="1" type="stmt"/>
+        <line num="112" count="1" type="stmt"/>
         <line num="113" count="1" type="stmt"/>
         <line num="114" count="1" type="stmt"/>
         <line num="115" count="1" type="stmt"/>
-        <line num="116" count="1" type="stmt"/>
       </file>
     </package>
     <package name="cse341-bikeshop.config">

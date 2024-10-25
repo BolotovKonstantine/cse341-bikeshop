@@ -16,28 +16,27 @@ jest.mock('passport', () => {
     session: jest.fn(() => (req, res, next) => next()),
     authenticate: jest.fn((strategy, options) => (req, res, next) => {
       if (strategy === 'github') {
-        req.user = { displayName: 'MockUser' }; 
+        req.user = { displayName: 'MockUser' };
         return next();
       }
       return originalModule.authenticate(strategy, options)(req, res, next);
     }),
     use: jest.fn(),
-    serializeUser: jest.fn(() => (req, res, next) => next()), 
-    deserializeUser: jest.fn(() => (req, res, next) => next()), /
+    serializeUser: jest.fn(() => (req, res, next) => next()),
+    deserializeUser: jest.fn(() => (req, res, next) => next()),
   };
 });
 
 jest.mock('passport-github2', () => {
   return {
     Strategy: jest.fn((options, verify) => {
-      const done = jest.fn(); 
-      verify(null, null, { displayName: 'MockUser' }, done); 
+      const done = jest.fn();
+      verify(null, null, { displayName: 'MockUser' }, done);
     }),
   };
 });
 
 describe('Server Tests', () => {
-
   beforeAll(() => {
     app.get('/error', (req, res, next) => {
       const error = new Error('Test Error');
@@ -54,8 +53,8 @@ describe('Server Tests', () => {
 
   test('should handle GitHub OAuth callback and redirect to home', async () => {
     const response = await request(app).get('/oauth/github/callback');
-    expect(response.statusCode).toBe(302); 
-    expect(response.headers.location).toBe('/'); 
+    expect(response.statusCode).toBe(302);
+    expect(response.headers.location).toBe('/');
   });
 
   test('should return login failure message', async () => {
