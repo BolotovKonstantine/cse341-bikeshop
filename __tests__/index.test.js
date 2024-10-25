@@ -43,23 +43,6 @@ describe('Route Tests', () => {
       expect(response.text).toContain('Swagger');
     }
   });
-  /*
-  // Test for /logout route with enhanced mock
-  it('should log out user on /logout', async () => {
-    const mockLogout = jest.fn((callback) => callback());
-    const mockIsAuthenticated = jest.fn().mockReturnValue(true);
-
-    app.use((req, res, next) => {
-      req.logout = mockLogout;
-      req.isAuthenticated = mockIsAuthenticated;
-      next();
-    });
-
-    const response = await request(app).get('/logout');
-    expect(mockLogout).toHaveBeenCalled();
-    expect(response.statusCode).toBe(200);
-    expect(response.text).toBe('You are logged out.');
-  });*/
 
   // Route tests for /products, /orders, /users, /stock
   it.each([
@@ -72,11 +55,6 @@ describe('Route Tests', () => {
       const response = await request(app)
         .get(path)
         .timeout({ deadline: timeout });
-
-      /* Expect 200 or 404; log response body for 500 errors
-      if (response.statusCode === 500) {
-        console.error(`Error accessing ${path}:`, response.text);
-      }*/
 
       expect([200, 404, 500]).toContain(response.statusCode);
     } catch (error) {
