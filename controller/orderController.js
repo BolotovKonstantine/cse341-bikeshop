@@ -139,7 +139,10 @@ const deleteProduct = async (req, res) => {
         } else {
 
             if (productExists.quantity > quantityToDelete) {
-                productExists.quanty -= quantityToDelete
+                await Order.updateOne(
+                    { _id: req.params.orderId, 'products.productId': productToDelete },
+                    { $set: { 'products.$.quantity': productExists.quantity -= quantityToDelete } }
+                );
             } else {
                 order.products = order.products.filter(product => 
                     !(product.productId.toString() === productToDelete.toString() && product.quantity <= quantityToDelete)
