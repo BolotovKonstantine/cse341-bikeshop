@@ -2,14 +2,12 @@ const request = require('supertest');
 const mongoose = require('mongoose');
 const app = require('../server');
 
-// Set a timeout for all tests
+// Set a timeout for all tests - my computer runs to slowly
 jest.setTimeout(15000);
 
-// Spy on Mongoose's connect and disconnect methods to prevent real database connections
 jest.spyOn(mongoose, 'connect').mockImplementation(() => Promise.resolve());
 jest.spyOn(mongoose, 'disconnect').mockImplementation(() => Promise.resolve());
 
-// Mock passport and GithubStrategy to prevent GitHub OAuth call errors
 jest.mock('passport', () => {
   const originalModule = jest.requireActual('passport');
   return {
@@ -18,29 +16,28 @@ jest.mock('passport', () => {
     session: jest.fn(() => (req, res, next) => next()),
     authenticate: jest.fn((strategy, options) => (req, res, next) => {
       if (strategy === 'github') {
-        req.user = { displayName: 'MockUser' }; // Mock user
+        req.user = { displayName: 'MockUser' }; 
         return next();
       }
       return originalModule.authenticate(strategy, options)(req, res, next);
     }),
     use: jest.fn(),
-    serializeUser: jest.fn(() => (req, res, next) => next()), // Mocking to proceed without `done`
-    deserializeUser: jest.fn(() => (req, res, next) => next()), // Mocking to proceed without `done`
+    serializeUser: jest.fn(() => (req, res, next) => next()), 
+    deserializeUser: jest.fn(() => (req, res, next) => next()), /
   };
 });
 
-// Mock the GithubStrategy to avoid real GitHub OAuth setup and add a done function
 jest.mock('passport-github2', () => {
   return {
     Strategy: jest.fn((options, verify) => {
-      const done = jest.fn(); // Mock done function within the strategy
-      verify(null, null, { displayName: 'MockUser' }, done); // Pass done to verify
+      const done = jest.fn(); 
+      verify(null, null, { displayName: 'MockUser' }, done); 
     }),
   };
 });
 
 describe('Server Tests', () => {
-  // Define the /error route before all tests, so it’s consistently available
+
   beforeAll(() => {
     app.get('/error', (req, res, next) => {
       const error = new Error('Test Error');
@@ -57,8 +54,8 @@ describe('Server Tests', () => {
 
   test('should handle GitHub OAuth callback and redirect to home', async () => {
     const response = await request(app).get('/oauth/github/callback');
-    expect(response.statusCode).toBe(302); // Redirect status
-    expect(response.headers.location).toBe('/'); // Redirect to home
+    expect(response.statusCode).toBe(302); 
+    expect(response.headers.location).toBe('/'); 
   });
 
   test('should return login failure message', async () => {
