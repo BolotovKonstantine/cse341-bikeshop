@@ -25,7 +25,7 @@ const getProducts = async (req, res, next) => {
   try {
     const products = await Product.find();
 
-    if (!products) {
+    if (products.length === 0) {
       return res.send('No products found');
     }
     res.status(200).json(products);
