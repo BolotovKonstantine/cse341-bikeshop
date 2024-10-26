@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const app = require('../server');
 
 // Set a timeout for all tests - my computer runs to slowly
-jest.setTimeout(10000);
+jest.setTimeout(15000);
 
 jest.spyOn(mongoose, 'connect').mockImplementation(() => Promise.resolve());
 jest.spyOn(mongoose, 'disconnect').mockImplementation(() => Promise.resolve());
