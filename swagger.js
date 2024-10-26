@@ -29,13 +29,13 @@ const userSchema = Joi.object({
 });
 
 const newStockSchema = Joi.object({
-  product: Joi.string().required(),
-  quantity: Joi.number().required(),
+  productId: Joi.string().required(),
+  numItems: Joi.number().required(),
   location: Joi.string().required()
 });
 
 const updateStockSchema = Joi.object({
-  quantity: Joi.number().required(),
+  numItems: Joi.number().required(),
   location: Joi.string().optional()
 });
 
