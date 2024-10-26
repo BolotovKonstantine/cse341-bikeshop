@@ -547,7 +547,21 @@
     },
     "/stock/": {
       "post": {
+        "tags": [
+          "Stock"
+        ],
         "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "description": "Stock data to be added",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/NewStock"
+            }
+          }
+        ],
         "responses": {
           "201": {
             "description": "Created"
@@ -560,6 +574,9 @@
     },
     "/stock/all-products": {
       "get": {
+        "tags": [
+          "Stock"
+        ],
         "description": "",
         "responses": {
           "200": {
@@ -570,6 +587,9 @@
     },
     "/stock/{product}": {
       "get": {
+        "tags": [
+          "Stock"
+        ],
         "description": "",
         "parameters": [
           {
@@ -593,7 +613,45 @@
       }
     },
     "/stock/{stock}": {
+      "put": {
+        "tags": [
+          "Stock"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "stock",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "Stock ID"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "description": "Updated stock data",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/UpdateStock"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      },
       "delete": {
+        "tags": [
+          "Stock"
+        ],
         "description": "",
         "parameters": [
           {
@@ -706,6 +764,43 @@
           "address",
           "email",
           "phone"
+        ],
+        "additionalProperties": false
+      },
+      "NewStock": {
+        "type": "object",
+        "properties": {
+          "product": {
+            "type": "string"
+          },
+          "quantity": {
+            "type": "number",
+            "format": "float"
+          },
+          "location": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "product",
+          "quantity",
+          "location"
+        ],
+        "additionalProperties": false
+      },
+      "UpdateStock": {
+        "type": "object",
+        "properties": {
+          "quantity": {
+            "type": "number",
+            "format": "float"
+          },
+          "location": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "quantity"
         ],
         "additionalProperties": false
       }

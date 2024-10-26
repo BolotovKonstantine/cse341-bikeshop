@@ -28,8 +28,21 @@ const userSchema = Joi.object({
     .required(),
 });
 
+const newStockSchema = Joi.object({
+  product: Joi.string().required(),
+  quantity: Joi.number().required(),
+  location: Joi.string().required()
+});
+
+const updateStockSchema = Joi.object({
+  quantity: Joi.number().required(),
+  location: Joi.string().optional()
+});
+
 const productSchemaSwagger = joiToSwagger(productSchema).swagger;
 const userSchemaSwagger = joiToSwagger(userSchema).swagger;
+const newStockSchemaSwagger = joiToSwagger(newStockSchema).swagger;
+const updateStockSchemaSwagger = joiToSwagger(updateStockSchema).swagger;
 
 const doc = {
   info: {
@@ -42,6 +55,8 @@ const doc = {
     schemas: {
       Product: productSchemaSwagger,
       User: userSchemaSwagger,
+      NewStock: newStockSchemaSwagger,
+      UpdateStock: updateStockSchemaSwagger,
     },
   },
 };

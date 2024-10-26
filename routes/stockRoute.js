@@ -3,25 +3,59 @@ const router = express.Router();
 const stockController = require('../controller/stockController');
 
 router.post(
-  // #swagger.tags = ['Stocks']
-  '/',
-  stockController.addNewStock
+    '/',
+    /*
+    #swagger.tags = ['Stock']
+    #swagger.parameters['body'] = {
+      in: 'body',
+      description: 'Stock data to be added',
+      required: true,
+      schema: {
+        $ref: '#/components/schemas/NewStock'
+      }
+    }
+    */
+    stockController.addNewStock
 );
+
 router.get(
-  // #swagger.tags = ['Stocks']
-  '/all-products',
-  stockController.getAllStocks
+    '/all-products',
+    // #swagger.tags = ['Stock']
+    stockController.getAllStocks
 );
+
 router.get(
-  // #swagger.tags = ['Stocks']
-  '/:product',
-  stockController.getStocksByProduct
+    '/:product',
+    // #swagger.tags = ['Stock']
+    stockController.getStocksByProduct
 );
-// router.put('/:stock', stockController.updateStock);
+
+router.put(
+    '/:stock',
+    /*
+    #swagger.tags = ['Stock']
+    #swagger.parameters['stock'] = {
+      in: 'path',
+      description: 'Stock ID',
+      required: true,
+      type: 'string'
+    }
+    #swagger.parameters['body'] = {
+      in: 'body',
+      description: 'Updated stock data',
+      required: true,
+      schema: {
+        $ref: '#/components/schemas/UpdateStock'
+      }
+    }
+    */
+    stockController.updateStock
+);
+
 router.delete(
-  // #swagger.tags = ['Stocks']
-  '/:stock',
-  stockController.deleteStockById
+    '/:stock',
+    // #swagger.tags = ['Stock']
+    stockController.deleteStockById
 );
 
 module.exports = router;
