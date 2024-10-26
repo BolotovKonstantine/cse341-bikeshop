@@ -1,12 +1,20 @@
+// const mongoose = require('mongoose');
+// const orderSchema = require('../model/Order');
+// const userSchema = require('../model/User');
+// const productSchema = require('../model/Product')
+// const { error } = require('../utilities/productvalidator');
+// const { newUser } = require('./user');
+// const Order = mongoose.model('Order')
+// const Product = mongoose.model('Product');
+// const User = mongoose.model('User');
 const mongoose = require('mongoose');
-const orderSchema = require('../model/Order');
-const userSchema = require('../model/User');
-const productSchema = require('../model/Product')
+const Order = require('../model/Order'); // Import the already defined Order model
+const User = require('../model/User');   // Import the already defined User model
+const Product = require('../model/Product'); // Import the already defined Product model
 const { error } = require('../utilities/productvalidator');
 const { newUser } = require('./user');
-const Order = mongoose.model('Order')
-const Product = mongoose.model('Product');
-const User = mongoose.model('User');
+
+
 // productId, quantity, userId
 
 
@@ -18,9 +26,9 @@ const User = mongoose.model('User');
 const createOrder = async (req, res, next) => { // TODO: Add functionality to check and update stock quantity
     // const products = req.body.products;
     // const userId = req.body.userId;
+    const { products, userId } = req.body;
     const order = new Order({
-        products: req.body.products,
-        userId: req.body.userId
+        products, userId
     })
     try {
         await order.save();  // save the order to the orders collection
@@ -32,7 +40,7 @@ const createOrder = async (req, res, next) => { // TODO: Add functionality to ch
         }
         user.orders.push(order._id);
         await user.save({ validateBeforeSave: false }); 
-        res.status(200).json({message: 'Order succesfully created!'})
+        res.status(200).json({message: `Order succesfully created! New orderId: ${order._id}`})
 
     } catch (error) {
         res.status(500).json({message: `Unknown error occurred while saving order: ${error}` });
@@ -106,16 +114,15 @@ const addProduct = async (req, res) => {
     }
     try {
         const order = await Order.findById(req.params.orderId)
-        const productToAdd = req.body.productId;
-        const quantityToAdd = req.body.quantity;
+        const { productId, quantity} = req.body
         const orderProducts = order.products;
 
         // Check to see if order already has that product listed
-        const existingProduct = orderProducts.find(product => product.productId.toString() === productToAdd.toString());
+        const existingProduct = orderProducts.find(product => product.productId.toString() === productId.toString());
         if (!existingProduct) { // if it doesn't, add it
             order.products.push({productId: req.body.productId, quantity: req.body.quantity});
         } else { // if it does, update the quantity
-            existingProduct.quantity += quantityToAdd;
+            existingProduct.quantity += quantity;
         }
         await order.save();
         return res.status(200).json({message: 'Product added/updated successfully'})
@@ -129,23 +136,22 @@ const deleteProduct = async (req, res) => {
     if (!isValid(req.params.orderId)) {error};
     try{
         const order = await Order.findById(req.params.orderId);
-        const productToDelete = req.body.productId;
-        const quantityToDelete = req.body.quantity;
+        const [ productId, quantity ] = req.body;
         const orderProducts = order.products;
 
-        const productExists =  orderProducts.find(product => product.productId.toString() === productToDelete.toString());
+        const productExists =  orderProducts.find(product => product.productId.toString() === productId.toString());
         if (!productExists) {
             res.status(400).json({message: "Product doesn't exist in order"});
         } else {
 
-            if (productExists.quantity > quantityToDelete) {
+            if (productExists.quantity > quantity) {
                 await Order.updateOne(
-                    { _id: req.params.orderId, 'products.productId': productToDelete },
-                    { $set: { 'products.$.quantity': productExists.quantity -= quantityToDelete } }
+                    { _id: req.params.orderId, 'products.productId': productId },
+                    { $set: { 'products.$.quantity': productExists.quantity -= quantity } }
                 );
             } else {
                 order.products = order.products.filter(product => 
-                    !(product.productId.toString() === productToDelete.toString() && product.quantity <= quantityToDelete)
+                    !(product.productId.toString() === productId.toString() && product.quantity <= quantity)
                 );
                 if (order.products.length == 0) {
                     await Order.deleteOne({_id: order._id})
