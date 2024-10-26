@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const stockController = require('../controller/stockController');
+const { isAuthenticated } = require('../utilities/authenticate');
 
 router.post(
     '/',
@@ -15,6 +16,7 @@ router.post(
       }
     }
     */
+    isAuthenticated,
     stockController.addNewStock
 );
 
@@ -49,12 +51,14 @@ router.put(
       }
     }
     */
+    isAuthenticated,
     stockController.updateStock
 );
 
 router.delete(
     '/:stock',
     // #swagger.tags = ['Stock']
+    isAuthenticated,
     stockController.deleteStockById
 );
 
