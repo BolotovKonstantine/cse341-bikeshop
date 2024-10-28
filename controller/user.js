@@ -3,35 +3,33 @@ const userSchema = require('../utilities/userValidate');
 const mongoose = require('mongoose');
 
 const getAllUsers = async (req, res, next) => {
-    try {
-      const users = await User.find();
-  
-      if (!users) {
-        return res.send('No users found');
-      }
-      res.status(200).json(users);
-    } catch (error) {
-      next(error);
+  try {
+    const users = await User.find();
+
+    if (users.length === 0) {
+      return res.send('No users found');
     }
-  };
+    res.status(200).json(users);
+  } catch (error) {
+    next(error);
+  }
+};
 
 const getUser = async (req, res, next) => {
-const userId = req.params.userId;
+  const userId = req.params.userId;
 
-    if (!mongoose.Types.ObjectId.isValid(userId)) {
-        return res.status(400).json({ message: 'Invalid Id type' });
+  if (!mongoose.Types.ObjectId.isValid(userId)) {
+    return res.status(400).json({ message: 'Invalid Id type' });
+  }
+  try {
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: `User ${userId} not found` });
     }
-        try {
-            const user = await User.findById(userId);
-            if (!user) {
-            return res
-                .status(404)
-                .json({ message: `User ${userId} not found` });
-            }
-            res.status(200).json(user);
-        } catch (error) {
-            next(error);
-    }
+    res.status(200).json(user);
+  } catch (error) {
+    next(error);
+  }
 };
 
 const newUser = async (req, res, next) => {
@@ -70,9 +68,7 @@ const updateUser = async (req, res, next) => {
   try {
     const user = await User.findById(userId);
     if (!user) {
-      return res
-        .status(404)
-        .json({ message: `User ${userId} not found` });
+      return res.status(404).json({ message: `User ${userId} not found` });
     }
     const userUpdate = await User.findByIdAndUpdate(userId, value);
     res.status(200).json(userUpdate);
@@ -89,9 +85,7 @@ const deleteUser = async (req, res, next) => {
     }
     const user = await User.findById(userId);
     if (!user) {
-      return res
-        .status(404)
-        .json({ message: `User  ${userId} not found` });
+      return res.status(404).json({ message: `User  ${userId} not found` });
     }
     await User.findByIdAndDelete(userId);
     res.status(200).json({
@@ -107,5 +101,5 @@ module.exports = {
   newUser,
   getUser,
   updateUser,
-  deleteUser
+  deleteUser,
 };
