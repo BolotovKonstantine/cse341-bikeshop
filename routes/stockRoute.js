@@ -4,8 +4,7 @@ const stockController = require('../controller/stockController');
 const { isAuthenticated } = require('../utilities/authenticate');
 
 router.post(
-    '/',
-    /*
+  /*
     #swagger.tags = ['Stock']
     #swagger.parameters['body'] = {
       in: 'body',
@@ -16,25 +15,25 @@ router.post(
       }
     }
     */
-    isAuthenticated,
-    stockController.addNewStock
+  '/',
+  isAuthenticated,
+  stockController.addNewStock
 );
 
 router.get(
-    '/all-products',
-    // #swagger.tags = ['Stock']
-    stockController.getAllStocks
+  // #swagger.tags = ['Stock']
+  '/all-products',
+  stockController.getAllStocks
 );
 
 router.get(
-    '/:product',
-    // #swagger.tags = ['Stock']
-    stockController.getStocksByProduct
+  '/:product',
+  // #swagger.tags = ['Stock']
+  stockController.getStocksByProduct
 );
 
 router.put(
-    '/:stock',
-    /*
+  /*
     #swagger.tags = ['Stock']
     #swagger.parameters['stock'] = {
       in: 'path',
@@ -51,15 +50,16 @@ router.put(
       }
     }
     */
-    isAuthenticated,
-    stockController.updateStock
+  '/:stock',
+  isAuthenticated,
+  stockController.updateStock
 );
 
 router.delete(
-    '/:stock',
-    // #swagger.tags = ['Stock']
-    isAuthenticated,
-    stockController.deleteStockById
+  // #swagger.tags = ['Stock']
+  '/:stock',
+  isAuthenticated,
+  stockController.deleteStockById
 );
 
 module.exports = router;
