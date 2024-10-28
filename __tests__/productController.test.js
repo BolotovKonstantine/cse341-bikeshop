@@ -33,7 +33,7 @@ describe('Product Controller', () => {
           retailPrice: 500,
           quantity: 10,
           productionYear: 2023,
-          reviews: 'Great bike for mountain trails!', // Optional
+          reviews: 'Great bike for mountain trails!',
         },
       };
       Product.mockImplementation(() => ({
